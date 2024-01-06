@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 extension ContextExtension on BuildContext {
   MediaQueryData get mediaQuery => MediaQuery.of(this);
   ThemeData get theme => Theme.of(this);
-  bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
-  OverlayState get overlay => Overlay.of(this);
-  ScaffoldMessengerState get messenger => ScaffoldMessenger.of(this);
   NavigatorState get navigator => Navigator.of(this);
   // Locale get locale => Localizations.localeOf(this);
   TextDirection get textDirection => Directionality.of(this);
@@ -16,7 +13,6 @@ extension ContextExtension on BuildContext {
   TextStyle? get bodLarge => Theme.of(this).textTheme.bodyLarge;
   TextStyle? get bodMid => Theme.of(this).textTheme.bodyMedium;
   TextStyle? get bodSml => Theme.of(this).textTheme.bodySmall;
-  Color? get primaryColor => Theme.of(this).primaryColor;
   //GoRouter get router => GoRouter.of(this);
 }
 
