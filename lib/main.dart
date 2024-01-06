@@ -1,16 +1,17 @@
-import 'dart:io';
-
 import 'package:appnation_test_case/consts/assets_path.dart';
 import 'package:appnation_test_case/consts/sizes.dart';
 import 'package:appnation_test_case/utils/extensions/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_svg/svg.dart';
 
-void main() {
-  // FlutterNativeSplash.preserve(
-  // widgetsBinding:
-  // );
+Future<void> main() async {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await Future.delayed(Duration(seconds: 1));
+  FlutterNativeSplash.remove();
+
   runApp(
     MaterialApp(
       home: const MyApp(),
