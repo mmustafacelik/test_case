@@ -4,13 +4,11 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Bu Projede search çalışıyor fonksiyon olarak çalışıyor (print ettiğim yerden anlayabilirsiniz) fakat state güncellemiyor context farklarından kaynaklandığını düşünüyorum
+    Routing sistemi kullanmalısın.İsterleriniz arasında var şuan güncel olarak goRouter kullanıyorum (bu projede değil) autoRoute 'a geçmeyi düşünüyorum fakat bu projede sanırsam
+dialog yaptığım kısımları ModalRoute ile yapmamı istediniz fakat bu yapacak zamanım kalmadı maalesef 
+State Management olarak bloc'u hem öğrendim hem uygulamaya çalıştım bu sebeple yazdığım kodları inanın ben bile sevmedim.(Kendimi bu konuda çok eksik hissettim)
+Genellikle riverpod ve getx kullanıyordum projelerde fakat getx yaklaşımını hiç beğenmiyorum(context bağımsız değil state management,paket olmaması gerektiğini düşünüyorum)
+Bu projede çok eksik kaldığım yerler vardı ve bloc bilen bir arkadaşımdan yardım aldım ve çok büyük yardımlar özellikle hiç pratiğim olmadığı için.
+Buraya kadar okuyup değerlendirdiğiniz için teşekkürler vaktinizi ayırdınız.
+Normalde bu projeyi atmak hiç istemiyordum fakat en azından bloc'a başlamam için buraya dönüp bakmak istiyorum.

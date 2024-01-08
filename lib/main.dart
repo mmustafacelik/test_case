@@ -128,28 +128,89 @@ class MyApp extends StatelessWidget {
                     child: const SearchBar(),
                   ),
                   gapH16,
-                  GestureDetector(
-                    onTap: () async {
-                      Future<String> getPlatformVersion() async {
-                        try {
-                          return await const MethodChannel(
-                                  'platform_channel_example')
-                              .invokeMethod('getPlatformVersion');
-                        } on PlatformException catch (e) {
-                          return 'Failed to get platform version: $e';
-                        }
-                      }
-
-                      final platformVersion = await getPlatformVersion();
-                      if (context.mounted) {
-                        settingsBottomSheet(context,
-                            platformVersion: platformVersion);
-                      }
-                    },
+                  ClipPath(
+                    clipper: MyCustomClipper(),
                     child: Container(
-                      width: context.width,
-                      color: Colors.pink,
                       height: 100,
+                      width: context.width,
+                      decoration: BoxDecoration(
+                        color: const Color(
+                          0xffF2F2F7,
+                        ),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(
+                            30,
+                          ),
+                          topRight: Radius.circular(
+                            30,
+                          ),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 2,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: IntrinsicHeight(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Column(
+                                children: [
+                                  SvgPicture.asset(AssetsPath.homeIcon),
+                                  gapH16,
+                                  const Text('Home'),
+                                ],
+                              ),
+                              //TODO!! vertical divider yatay oluyor o yüzden container yazmak durumunda kaldım
+                              Container(
+                                height: 24,
+                                width: 1,
+                                color: const Color(
+                                  0xffC7C7CC,
+                                ),
+                                margin: const EdgeInsets.only(
+                                  bottom: Sizes.p32,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  Future<String> getPlatformVersion() async {
+                                    try {
+                                      return await const MethodChannel(
+                                              'platform_channel_example')
+                                          .invokeMethod('getPlatformVersion');
+                                    } on PlatformException catch (e) {
+                                      return 'Failed to get platform version: $e';
+                                    }
+                                  }
+
+                                  final platformVersion =
+                                      await getPlatformVersion();
+                                  if (context.mounted) {
+                                    settingsBottomSheet(context,
+                                        platformVersion: platformVersion);
+                                  }
+                                },
+                                child: Column(
+                                  children: [
+                                    SvgPicture.asset(AssetsPath.settingsIcon),
+                                    gapH16,
+                                    const Text(
+                                      'Settings',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -658,4 +719,66 @@ class CustomListTileWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+// class _MyPainter extends CustomPainter {
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     // Üst kısım
+//     Paint paint = Paint()
+//       ..color = Colors.blue
+//       ..style = PaintingStyle.fill;
+
+//     Path path = Path();
+//     path.moveTo(0, 0); // Başlangıç noktası
+//     path.lineTo(size.width - 50, 0); // Üst çizgi
+//     path.lineTo(size.width, size.height); // Sağ çizgi
+//     path.lineTo(0, size.height); // Alt çizgi
+//     path.close(); // Sol çizgiyi çizmek için path'i kapat
+
+//     canvas.drawPath(path, paint);
+//   }
+
+//   @override
+//   bool shouldRepaint(CustomPainter oldDelegate) {
+//     return true;
+//   }
+// }
+class _MyPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xffF2F2F7)
+      ..style = PaintingStyle.fill;
+
+    final path = Path()
+      ..moveTo(size.width / 30, 0) // Üst çizgi başlangıç noktası
+      ..lineTo(size.width / 1.04, 0) // Üst çizgi bitiş noktası
+      ..lineTo(size.width, size.height) // Sağ çizgi
+      ..lineTo(0, size.height) // Sol çizgi
+      ..close(); // Path'i kapat
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
+}
+
+class MyCustomClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path()
+      ..moveTo(size.width / 25, 0) // Üst çizgi başlangıç noktası
+      ..lineTo(size.width / 1.04, 0) // Üst çizgi bitiş noktası
+      ..lineTo(size.width, size.height) // Sağ çizgi
+      ..lineTo(0, size.height) // Sol çizgi
+      ..close(); // Path'i kapat
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

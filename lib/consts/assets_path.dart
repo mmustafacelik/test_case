@@ -6,4 +6,6 @@ class AssetsPath {
   static const String shareIcon = '${iconPath}share_icon.svg';
   static const String starIcon = '${iconPath}star_icon.svg';
   static const String termsIcon = '${iconPath}terms_icon.svg';
+  static const String homeIcon = '${iconPath}home_icon.svg';
+  static const String settingsIcon = '${iconPath}settings_icon.svg';
 }
