@@ -510,27 +510,35 @@ class SearchBar extends StatelessWidget {
           builder: (context) {
             return Padding(
               padding: MediaQuery.of(context).viewInsets,
-              child: GestureDetector(
-                onVerticalDragUpdate: (details) {
-                  int sensitivity = 8;
-                  if (details.delta.dy > sensitivity) {
-                    BlocProvider.of<HeighOfContainerBloc>(context).add(
-                      HeighDecremented(
-                        context.height / 3,
-                      ),
-                    );
-                    print('down');
-                  } else if (details.delta.dy < -sensitivity) {
-                    BlocProvider.of<HeighOfContainerBloc>(context).add(
-                      HeighIncremented(
-                        context.height / 3,
-                      ),
-                    );
-                    print('up');
-                  }
-                },
-                child: SingleChildScrollView(
-                  controller: ScrollController(),
+              child: SingleChildScrollView(
+                controller: ScrollController(),
+                child: GestureDetector(
+                  onVerticalDragUpdate: (details) {
+                    int sensitivity = 8;
+                    if (details.delta.dy > sensitivity) {
+                      if (BlocProvider.of<HeighOfContainerBloc>(context)
+                              .state
+                              .value ==
+                          context.height / 3) {
+                        Navigator.pop(context);
+                      } else {
+                        BlocProvider.of<HeighOfContainerBloc>(context).add(
+                          HeighDecremented(
+                            context.height / 3,
+                          ),
+                        );
+                      }
+
+                      print('down');
+                    } else if (details.delta.dy < -sensitivity) {
+                      BlocProvider.of<HeighOfContainerBloc>(context).add(
+                        HeighIncremented(
+                          context.height / 1.12,
+                        ),
+                      );
+                      print('up');
+                    }
+                  },
                   child:
                       BlocBuilder<HeighOfContainerBloc, HeighOfContainerState>(
                     builder: (context, state) {
