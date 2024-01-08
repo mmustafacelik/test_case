@@ -19,6 +19,13 @@ class DogSpeciesLoaded extends DogSpeciesState {
   const DogSpeciesLoaded(this.dogSpeciesModel);
 }
 
+class DogSpeciesSearchLoaded extends DogSpeciesState {
+  final DogSpeciesModel dogSpeciesModel;
+  @override
+  List<Object?> get props => [dogSpeciesModel];
+  const DogSpeciesSearchLoaded(this.dogSpeciesModel);
+}
+
 class DogSpeciesError extends DogSpeciesState {
   final String? message;
   const DogSpeciesError(this.message);

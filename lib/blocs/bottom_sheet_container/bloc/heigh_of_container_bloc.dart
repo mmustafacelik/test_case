@@ -15,10 +15,14 @@ class HeighOfContainerBloc
     Emitter<HeighOfContainerState> emit,
   ) {
     if (event is HeighIncremented) {
-      emit(HeighOfContainerState(800));
-      print(state.value);
+      if (state.value >= 900) return;
+      emit(HeighOfContainerState(state.value + event.heigh));
     } else if (event is HeighDecremented) {
-      emit(HeighOfContainerState(100));
+      if (state.value < event.height) {
+        emit(const HeighOfContainerState(0));
+      }
+      emit(HeighOfContainerState(state.value - event.height));
+
       print(state.value);
     }
   }

@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:appnation_test_case/blocs/bottom_sheet_container/bloc/heigh_of_container_bloc.dart';
 import 'package:appnation_test_case/blocs/dog_species/dog_species_bloc.dart';
+import 'package:appnation_test_case/blocs/dog_species/dog_species_events.dart';
 import 'package:appnation_test_case/blocs/dog_species/dog_species_state.dart';
 import 'package:appnation_test_case/consts/assets_path.dart';
 import 'package:appnation_test_case/consts/sizes.dart';
+import 'package:appnation_test_case/models/dog_species_model.dart';
 import 'package:appnation_test_case/utils/extensions/context_extensions.dart';
 import 'package:appnation_test_case/utils/themes.dart';
 import 'package:flutter/material.dart';
@@ -60,9 +64,11 @@ class MyApp extends StatelessWidget {
                     if (photo == null) {
                       continue;
                     }
-                    await precacheImage(NetworkImage(photo!), context);
+                    for (var element in photo) {
+                      await precacheImage(NetworkImage(element), context);
+                    }
+                    FlutterNativeSplash.remove();
                   }
-                  FlutterNativeSplash.remove();
 
                   // print('Load oldu');
                 } else if (state is DogSpeciesError) {
@@ -71,21 +77,36 @@ class MyApp extends StatelessWidget {
               },
               child: BlocBuilder<DogSpeciesBloc, DogSpeciesState>(
                   builder: (context, state) {
-                if (state is! DogSpeciesLoaded) {
+                DogSpeciesModel? model;
+                if (state is DogSpeciesLoaded) {
+                  model = state.dogSpeciesModel;
+                } else if (state is DogSpeciesSearchLoaded) {
+                  model = state.dogSpeciesModel;
+                }
+                if (model == null) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
+                print('state');
+                print(state);
+                print('model.message');
+                print(model.message);
+
                 return GridView.builder(
-                  itemCount: state.dogSpeciesModel.message?.length,
-                  itemBuilder: (context, index) => _item(
-                      context,
-                      state.dogSpeciesModel.message?.keys.toList()[index] ?? '',
-                      state.dogSpeciesModel.photo?[state
-                              .dogSpeciesModel.message?.keys
-                              .toList()[index]] ??
-                          '',
-                      state.dogSpeciesModel.message?.values.toList()[index]),
+                  itemCount: model.message?.length,
+                  itemBuilder: (context, index) {
+                    var random = Random();
+                    final name = model!.message?.keys.toList()[index] ?? '';
+                    var realPhotoList = model.photo?[name];
+                    var randomIndex =
+                        random.nextInt(realPhotoList?.length ?? 0);
+                    return _item(context,
+                        speciesName: name,
+                        speciesPhotoIndex: randomIndex,
+                        photoList: realPhotoList,
+                        subBreedsList: model.message?.values.toList()[index]);
+                  },
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                   ),
@@ -141,13 +162,15 @@ class MyApp extends StatelessWidget {
   }
 
   GestureDetector _item(
-    BuildContext context,
-    String speciesName,
-    String speciesPhoto,
-    List<String>? subBreedsList,
-  ) {
+    BuildContext context, {
+    required String speciesName,
+    required int speciesPhotoIndex,
+    required List<String>? photoList,
+    required List<String>? subBreedsList,
+  }) {
     return GestureDetector(
       onTap: () {
+        print(photoList);
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -160,9 +183,9 @@ class MyApp extends StatelessWidget {
                     top: Radius.circular(12),
                   ),
                   child: Image.network(
-                    speciesPhoto,
+                    photoList?[speciesPhotoIndex] ?? '',
                     height: context.height / 2,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fitWidth,
                   ),
                 ),
                 Align(
@@ -230,7 +253,7 @@ class MyApp extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return Center(
                           child: Text(
-                            subBreedsList?[index] ?? '',
+                            subBreedsList?[index] ?? 'No Sub Bread',
                             style: context.bodMid,
                           ),
                         );
@@ -250,13 +273,15 @@ class MyApp extends StatelessWidget {
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
+                                    var rPhoto = photoList?[
+                                        Random().nextInt(photoList.length)];
                                     return Dialog(
                                       backgroundColor: Colors.transparent,
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Image.network(
-                                            'https://picsum.photos/200',
+                                            rPhoto ?? '',
                                             width: double.infinity,
                                             height: context.height / 3,
                                             fit: BoxFit.cover,
@@ -340,7 +365,7 @@ class MyApp extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           image: DecorationImage(
-            image: NetworkImage(speciesPhoto),
+            image: NetworkImage(photoList?[speciesPhotoIndex] ?? ''),
             fit: BoxFit.cover,
           ),
         ),
@@ -455,6 +480,16 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+
+  _getNewRandom(int randomIndex, int i) {
+    var random = Random();
+    var randomIndex2 = random.nextInt(i);
+    if (randomIndex == randomIndex2) {
+      _getNewRandom(randomIndex, i);
+    } else {
+      return randomIndex2;
+    }
+  }
 }
 
 class SearchBar extends StatelessWidget {
@@ -466,10 +501,12 @@ class SearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        //Stac ile değiştir
         showModalBottomSheet(
           isScrollControlled: true,
           backgroundColor: Colors.white,
           context: context,
+          useSafeArea: true,
           builder: (context) {
             return Padding(
               padding: MediaQuery.of(context).viewInsets,
@@ -477,12 +514,18 @@ class SearchBar extends StatelessWidget {
                 onVerticalDragUpdate: (details) {
                   int sensitivity = 8;
                   if (details.delta.dy > sensitivity) {
-                    BlocProvider.of<HeighOfContainerBloc>(context)
-                        .add(HeighDecremented());
+                    BlocProvider.of<HeighOfContainerBloc>(context).add(
+                      HeighDecremented(
+                        context.height / 3,
+                      ),
+                    );
                     print('down');
                   } else if (details.delta.dy < -sensitivity) {
-                    BlocProvider.of<HeighOfContainerBloc>(context)
-                        .add(HeighIncremented());
+                    BlocProvider.of<HeighOfContainerBloc>(context).add(
+                      HeighIncremented(
+                        context.height / 3,
+                      ),
+                    );
                     print('up');
                   }
                 },
@@ -519,6 +562,13 @@ class SearchBar extends StatelessWidget {
                                 Sizes.p16,
                               ),
                               child: TextFormField(
+                                onChanged: (value) {
+                                  print('object');
+                                  context
+                                      .read<DogSpeciesBloc>()
+                                      .add(GetDogSpeciesSearchEvent(value));
+                                },
+
                                 focusNode: FocusNode(),
                                 autofocus: true,
                                 decoration: const InputDecoration.collapsed(

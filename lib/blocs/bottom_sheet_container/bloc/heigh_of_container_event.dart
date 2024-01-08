@@ -7,6 +7,20 @@ sealed class HeighOfContainerEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class HeighIncremented extends HeighOfContainerEvent {}
+class HeighIncremented extends HeighOfContainerEvent {
+  final double heigh;
 
-class HeighDecremented extends HeighOfContainerEvent {}
+  const HeighIncremented(this.heigh);
+
+  @override
+  List<Object> get props => [heigh];
+}
+
+class HeighDecremented extends HeighOfContainerEvent {
+  final double height;
+
+  const HeighDecremented(this.height);
+
+  @override
+  List<Object> get props => [height];
+}

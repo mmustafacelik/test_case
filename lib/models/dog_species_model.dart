@@ -4,11 +4,13 @@ class DogSpeciesModel {
   Map<String, List<String>>? message;
   String? status;
   String? error;
-  Map<String, String>? photo;
+  Map<String, List<String>>? photo;
 
   DogSpeciesModel({
     this.message,
     this.status,
+    this.error,
+    this.photo,
   });
 
   DogSpeciesModel copyWith({
