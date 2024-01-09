@@ -3,7 +3,6 @@
 A new Flutter project.
 
 ## Getting Started
-dosya boyutu düşük olsun diye clean edip gönderiyorum.
 
 Bu Projede search çalışıyor fonksiyon olarak çalışıyor (print ettiğim yerden anlayabilirsiniz) fakat state güncellemiyor context farklarından kaynaklandığını düşünüyorum
     Routing sistemi kullanmalısın.İsterleriniz arasında var şuan güncel olarak goRouter kullanıyorum (bu projede değil) autoRoute 'a geçmeyi düşünüyorum fakat bu projede sanırsam
